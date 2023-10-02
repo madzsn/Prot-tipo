@@ -2,73 +2,82 @@
 
 #include <iostream>
 #include <iomanip>
-#include <limits> // Para usar numeric_limits
+#include <string>
 
 using namespace std;
 
-int main() {
-    double salarioMensal = 1200.0;
-    double valorHora = salarioMensal / (20 * 8); // Valor da hora considerando um mês com 20 dias úteis e 8 horas por dia
-    double valorHoraExtra = valorHora * 1.5; // Valor da hora extra (50% a mais)
-
+struct Ficha {
+    string nome;
     double horasTrabalhadasDia;
     int diasTrabalhados;
     double horasExtrasMes;
+};
 
-    // Função para verificar se a entrada é um número válido
-    auto getDoubleInput = [](const string& prompt) -> double {
-        double input;
-        while (true) {
-            cout << prompt;
-            if (cin >> input) {
-                // A entrada é um número válido
-                break;
-            } else {
-                // Limpar o estado de erro de cin e descartar o valor não numérico
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Entrada inválida. Por favor, digite um número válido." << endl;
-            }
+int main() {
+    const int numPessoas = 5; // Variável que define 5 como o limite de fichas
+    Ficha fichas[numPessoas];
+
+    int numPessoasAdicionadas = 0; // Número de pessoas adicionadas até agora
+
+    char continuar;
+    do {
+        if (numPessoasAdicionadas >= numPessoas) { // Condição de bloco que para a execução quando o número de fichas for 5
+            cout << "Você atingiu o limite de fichas (" << numPessoas << "). Não é possível adicionar mais pessoas." << endl;
+            break;
         }
-        return input;
-    };
 
-    // Solicitar o número de horas trabalhadas em um dia
-    horasTrabalhadasDia = getDoubleInput("Digite o número de horas trabalhadas em um dia: ");
+        cout << "\nFicha da Pessoa " << numPessoasAdicionadas + 1 << endl;
+        cout << "-----------------------" << endl;
 
-    // Solicitar o número de dias trabalhados no mês
-    diasTrabalhados = getDoubleInput("Digite o número de dias trabalhados no mês: ");
+        cout << "Digite seu primeiro nome: ";
+        cin >> fichas[numPessoasAdicionadas].nome;
 
-    // Solicitar o número de horas extras trabalhadas no mês
-    horasExtrasMes = getDoubleInput("Digite o número de horas extras trabalhadas no mês: ");
+        cout << "Digite o número de horas trabalhadas em um dia: ";
+        cin >> fichas[numPessoasAdicionadas].horasTrabalhadasDia;
 
-    // Calcular as horas trabalhadas no dia, no mês e no ano
-    double horasTrabalhadasMes = horasTrabalhadasDia * diasTrabalhados;
-    double horasTrabalhadasAno = horasTrabalhadasMes * 12;
+        cout << "Digite o número de dias trabalhados no mês: ";
+        cin >> fichas[numPessoasAdicionadas].diasTrabalhados;
 
-    // Calcular os ganhos diários, mensais e anuais
-    double ganhosDia = horasTrabalhadasDia * valorHora;
-    double ganhosMes = horasTrabalhadasMes * valorHora;
-    double ganhosAno = horasTrabalhadasAno * valorHora;
+        cout << "Digite o número de horas extras trabalhadas no mês: ";
+        cin >> fichas[numPessoasAdicionadas].horasExtrasMes;
 
-    // Calcular os ganhos das horas extras
-    double ganhosExtrasMes = horasExtrasMes * valorHoraExtra;
-    double ganhosExtrasAno = ganhosExtrasMes * 12;
+        numPessoasAdicionadas++;
 
-    // Calcular os ganhos totais
-    double ganhosTotaisDia = ganhosDia + (horasExtrasMes * valorHoraExtra);
-    double ganhosTotaisMes = ganhosMes + ganhosExtrasMes;
-    double ganhosTotaisAno = ganhosAno + ganhosExtrasAno;
+        cout << "\nDeseja adicionar outra pessoa? (S/N): ";
+        cin >> continuar;
+    } while (continuar == 'S' || continuar == 's');
 
-    // Imprimir o relatório
-    cout << "\nRelatório de Horas Trabalhadas e Ganhos" << endl;
-    cout << "---------------------------------------" << endl;
-    cout << "Horas Trabalhadas no Dia: " << horasTrabalhadasDia << " horas" << endl;
-    cout << "Horas Trabalhadas no Mês: " << horasTrabalhadasMes << " horas" << endl;
-    cout << "Horas Trabalhadas no Ano: " << horasTrabalhadasAno << " horas" << endl;
-    cout << "Ganhos Diários: R$" << fixed << setprecision(2) << ganhosTotaisDia << endl;
-    cout << "Ganhos Mensais: R$" << fixed << setprecision(2) << ganhosTotaisMes << endl;
-    cout << "Ganhos Anuais: R$" << fixed << setprecision(2) << ganhosTotaisAno << endl;
-    
+    // Informações padrões que serão utilizadas no gerador de fichas
+    for (int i = 0; i < numPessoasAdicionadas; i++) {
+        double salarioMensal = 1200.0;
+        double valorHora = salarioMensal / (20 * 8);
+        double valorHoraExtra = valorHora * 1.5;
+
+        double horasTrabalhadasMes = fichas[i].horasTrabalhadasDia * fichas[i].diasTrabalhados;
+        double horasTrabalhadasAno = horasTrabalhadasMes * 12;
+
+        double ganhosDia = fichas[i].horasTrabalhadasDia * valorHora;
+        double ganhosMes = horasTrabalhadasMes * valorHora;
+        double ganhosAno = horasTrabalhadasAno * valorHora;
+
+        double ganhosExtrasMes = fichas[i].horasExtrasMes * valorHoraExtra;
+        double ganhosExtrasAno = ganhosExtrasMes * 12;
+
+        double ganhosTotaisDia = ganhosDia + (fichas[i].horasExtrasMes * valorHoraExtra);
+        double ganhosTotaisMes = ganhosMes + ganhosExtrasMes;
+        double ganhosTotaisAno = ganhosAno + ganhosExtrasAno;
+        
+        // Relatório da jornada de trabalho e ganhos
+        cout << "\nFicha da Pessoa " << i + 1 << endl;
+        cout << "-----------------------" << endl;
+        cout << "Nome: " << fichas[i].nome << endl;
+        cout << "Horas Trabalhadas no Dia: " << fichas[i].horasTrabalhadasDia << " horas" << endl;
+        cout << "Horas Trabalhadas no Mês: " << horasTrabalhadasMes << " horas" << endl;
+        cout << "Horas Trabalhadas no Ano: " << horasTrabalhadasAno << " horas" << endl;
+        cout << "Ganhos Diários: R$" << fixed << setprecision(2) << ganhosTotaisDia << endl;
+        cout << "Ganhos Mensais: R$" << fixed << setprecision(2) << ganhosTotaisMes << endl;
+        cout << "Ganhos Anuais: R$" << fixed << setprecision(2) << ganhosTotaisAno << endl;
+    }
+
     return 0;
 }
