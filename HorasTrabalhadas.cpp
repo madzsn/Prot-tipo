@@ -2,17 +2,49 @@
 
 #include <iostream>
 #include <iomanip>
+#include <limits>
 #include <string>
-
+#include <cctype>
 using namespace std;
 
 struct Ficha {
     string nome;
-    string cargo; // Adicionado um campo para o cargo
+    string cargo;
     double horasTrabalhadasDia;
     int diasTrabalhados;
     double horasExtrasMes;
 };
+
+// Função para validar se uma string contém apenas letras
+bool contemApenasLetras(const string &str) {
+    for (char c : str) {
+        if (!isalpha(c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Função para validar a entrada de números inteiros dentro de um intervalo
+int obterNumeroInteiro(const string &mensagem, int minValor, int maxValor) {
+    int numero;
+    bool entradaValida = false;
+
+    do {
+        cout << mensagem;
+        cin >> numero;
+
+        if (cin.fail() || numero < minValor || numero > maxValor) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Entrada inválida. Digite um número entre " << minValor << " e " << maxValor << "." << endl;
+        } else {
+            entradaValida = true;
+        }
+    } while (!entradaValida);
+
+    return numero;
+}
 
 int main() {
     const int numPessoas = 5;
@@ -30,20 +62,20 @@ int main() {
         cout << "\nFicha da Pessoa " << numPessoasAdicionadas + 1 << endl;
         cout << "-----------------------" << endl;
 
-        cout << "Digite seu nome: ";
-        cin >> fichas[numPessoasAdicionadas].nome;
-        
-        cout << "Digite seu cargo: ";
-        cin >> fichas[numPessoasAdicionadas].cargo; // Adicione o cargo aqui
-        
-        cout << "Digite o número de horas trabalhadas em um dia: ";
-        cin >> fichas[numPessoasAdicionadas].horasTrabalhadasDia;
+        do {
+            cout << "Digite o nome da pessoa (apenas letras): ";
+            cin >> fichas[numPessoasAdicionadas].nome;
+            
+            cout << "Digite seu cargo: ";
+            cin >> fichas[numPessoasAdicionadas].cargo;
+            if (!contemApenasLetras(fichas[numPessoasAdicionadas].nome)) {
+                cout << "Nome inválido. Digite apenas letras." << endl;
+            }
+        } while (!contemApenasLetras(fichas[numPessoasAdicionadas].nome));
 
-        cout << "Digite o número de dias trabalhados no mês: ";
-        cin >> fichas[numPessoasAdicionadas].diasTrabalhados;
-
-        cout << "Digite o número de horas extras trabalhadas no mês: ";
-        cin >> fichas[numPessoasAdicionadas].horasExtrasMes;
+        fichas[numPessoasAdicionadas].horasTrabalhadasDia = obterNumeroInteiro("Digite o número de horas trabalhadas em um dia (limite de 24 horas): ", 0, 24);
+        fichas[numPessoasAdicionadas].diasTrabalhados = obterNumeroInteiro("Digite o número de dias trabalhados no mês (limite de 31 dias): ", 0, 31);
+        fichas[numPessoasAdicionadas].horasExtrasMes = obterNumeroInteiro("Digite o número de horas extras trabalhadas no mês: ", 0, numeric_limits<int>::max());
 
         numPessoasAdicionadas++;
 
@@ -51,6 +83,7 @@ int main() {
         cin >> continuar;
     } while (continuar == 'S' || continuar == 's');
 
+    // Agora, você pode gerar uma ficha para cada pessoa
     for (int i = 0; i < numPessoasAdicionadas; i++) {
         double salarioMensal = 1200.0;
         double valorHora = salarioMensal / (20 * 8);
@@ -73,7 +106,7 @@ int main() {
         cout << "\nFicha da Pessoa " << i + 1 << endl;
         cout << "-----------------------" << endl;
         cout << "Nome: " << fichas[i].nome << endl;
-        cout << "Cargo: " << fichas[i].cargo << endl; // Imprime o cargo
+        cout << "Cargo: " << fichas[i].cargo << endl;
         cout << "Horas Trabalhadas no Dia: " << fichas[i].horasTrabalhadasDia << " horas" << endl;
         cout << "Horas Trabalhadas no Mês: " << horasTrabalhadasMes << " horas" << endl;
         cout << "Horas Trabalhadas no Ano: " << horasTrabalhadasAno << " horas" << endl;
