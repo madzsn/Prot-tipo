@@ -8,20 +8,21 @@ using namespace std;
 
 struct Ficha {
     string nome;
+    string cargo; // Adicionado um campo para o cargo
     double horasTrabalhadasDia;
     int diasTrabalhados;
     double horasExtrasMes;
 };
 
 int main() {
-    const int numPessoas = 5; // Variável que define 5 como o limite de fichas
+    const int numPessoas = 5;
     Ficha fichas[numPessoas];
 
-    int numPessoasAdicionadas = 0; // Número de pessoas adicionadas até agora
+    int numPessoasAdicionadas = 0;
 
     char continuar;
     do {
-        if (numPessoasAdicionadas >= numPessoas) { // Condição de bloco que para a execução quando o número de fichas for 5
+        if (numPessoasAdicionadas >= numPessoas) {
             cout << "Você atingiu o limite de fichas (" << numPessoas << "). Não é possível adicionar mais pessoas." << endl;
             break;
         }
@@ -29,9 +30,12 @@ int main() {
         cout << "\nFicha da Pessoa " << numPessoasAdicionadas + 1 << endl;
         cout << "-----------------------" << endl;
 
-        cout << "Digite seu primeiro nome: ";
+        cout << "Digite seu nome: ";
         cin >> fichas[numPessoasAdicionadas].nome;
-
+        
+        cout << "Digite seu cargo: ";
+        cin >> fichas[numPessoasAdicionadas].cargo; // Adicione o cargo aqui
+        
         cout << "Digite o número de horas trabalhadas em um dia: ";
         cin >> fichas[numPessoasAdicionadas].horasTrabalhadasDia;
 
@@ -47,7 +51,6 @@ int main() {
         cin >> continuar;
     } while (continuar == 'S' || continuar == 's');
 
-    // Informações padrões que serão utilizadas no gerador de fichas
     for (int i = 0; i < numPessoasAdicionadas; i++) {
         double salarioMensal = 1200.0;
         double valorHora = salarioMensal / (20 * 8);
@@ -66,11 +69,11 @@ int main() {
         double ganhosTotaisDia = ganhosDia + (fichas[i].horasExtrasMes * valorHoraExtra);
         double ganhosTotaisMes = ganhosMes + ganhosExtrasMes;
         double ganhosTotaisAno = ganhosAno + ganhosExtrasAno;
-        
-        // Relatório da jornada de trabalho e ganhos
+
         cout << "\nFicha da Pessoa " << i + 1 << endl;
         cout << "-----------------------" << endl;
         cout << "Nome: " << fichas[i].nome << endl;
+        cout << "Cargo: " << fichas[i].cargo << endl; // Imprime o cargo
         cout << "Horas Trabalhadas no Dia: " << fichas[i].horasTrabalhadasDia << " horas" << endl;
         cout << "Horas Trabalhadas no Mês: " << horasTrabalhadasMes << " horas" << endl;
         cout << "Horas Trabalhadas no Ano: " << horasTrabalhadasAno << " horas" << endl;
